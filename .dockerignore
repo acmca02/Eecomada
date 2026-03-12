@@ -1,0 +1,14 @@
+.git
+.gitignore
+node_modules
+vendor
+.env
+.env.*
+Dockerfile
+nginx.conf
+storage/*
+bootstrap/cache/*
+public/hot
+tests
+.gitattributes
+README.md
