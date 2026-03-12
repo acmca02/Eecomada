@@ -1,17 +1,23 @@
-# -------------------------- Stage 2: Final image (très légère) --------------------------
-FROM php:8.3-fpm-alpine AS final
+# Stage 1 (builder)
+FROM php:8.3-fpm-alpine AS builder
 
+# ... tes RUN composer install, npm build, etc. ...
+
+# Stage 2 (final)
+FROM php:8.3-fpm-alpine
+
+# Install deps runtime + dev pour compilation (comme avant)
 RUN apk add --no-cache --virtual .build-deps \
     libpng-dev libjpeg-turbo-dev freetype-dev libzip-dev oniguruma-dev \
     && apk add --no-cache \
         libpng libjpeg-turbo freetype libzip oniguruma nginx \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo_mysql mbstring exif pcntl bcmath zip opcache \
-    && apk del .build-deps \
-    && rm -rf /var/cache/apk/* /tmp/*
+    && apk del .build-deps
 
-# Le reste reste identique : COPY depuis builder, nginx.conf, php.ini, etc.
+# COPIE CORRECTE : juste --from=builder (sans :latest !)
 COPY --from=builder --chown=www-data:www-data /app /var/www/html
+
 COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY php.ini-production /usr/local/etc/php/conf.d/zz-custom.ini
 
