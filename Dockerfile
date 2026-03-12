@@ -101,4 +101,4 @@ HEALTHCHECK --interval=30s --timeout=3s \
   CMD wget --no-verbose --tries=1 --spider http://localhost:80 || exit 1
 
 # Démarrage : PHP-FPM + Nginx
-CMD ["sh", "-c", "php-fpm && nginx -g 'daemon off;'"]
+CMD ["./entrypoint.sh", "sh", "-c", "php-fpm && nginx -g 'daemon off;'" , "chmod +x entrypoint.sh"]  
